@@ -1,23 +1,23 @@
 test_that("ensure_dir creates directories and is idempotent", {
-  dir_path = file.path(tempdir(), "researchExports-test", "nested")
+  dir_path = file.path(tempdir(), "mxport-test", "nested")
 
   if (dir.exists(dir_path)) {
     unlink(dir_path, recursive = TRUE, force = TRUE)
   }
 
   expect_false(dir.exists(dir_path))
-  expect_silent(researchExports:::ensure_dir(dir_path))
+  expect_silent(mxport:::ensure_dir(dir_path))
   expect_true(dir.exists(dir_path))
 
-  expect_silent(researchExports:::ensure_dir(dir_path))
+  expect_silent(mxport:::ensure_dir(dir_path))
   expect_true(dir.exists(dir_path))
 })
 
 test_that("build_export_files returns named paths and creates format dirs", {
-  root = file.path(tempdir(), paste0("researchExports-build-", as.integer(stats::runif(1, 1, 1e6))))
+  root = file.path(tempdir(), paste0("mxport-build-", as.integer(stats::runif(1, 1, 1e6))))
   formats = c("svg", "png")
 
-  files = researchExports:::build_export_files(
+  files = mxport:::build_export_files(
     filename = "figure-1",
     base_dir = root,
     subfolder = "charts",
@@ -34,7 +34,7 @@ test_that("build_export_files returns named paths and creates format dirs", {
 
 test_that("build_export_files validates filename input", {
   expect_error(
-    researchExports:::build_export_files(
+    mxport:::build_export_files(
       filename = c("a", "b"),
       base_dir = tempdir(),
       subfolder = "charts"
@@ -44,7 +44,7 @@ test_that("build_export_files validates filename input", {
 
 test_that("export_gtsummary_table rejects unsupported input types", {
   expect_error(
-    researchExports::export_gtsummary_table(
+    mxport::export_gtsummary_table(
       x = 1,
       filename = "bad-input",
       base_dir = tempdir(),

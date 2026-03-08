@@ -1,4 +1,4 @@
-Package: researchExports
+Package: mxport
 Type: Package
 Title: Lightweight Export Helpers for Research Outputs
 Version: 0.0.0.9000

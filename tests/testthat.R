@@ -1,6 +1,6 @@
 if (requireNamespace("testthat", quietly = TRUE)) {
   library(testthat)
-  library(researchExports)
+  library(mxport)
 
-  test_check("researchExports")
+  test_check("mxport")
 }
