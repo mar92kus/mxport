@@ -1,0 +1,18 @@
+Package: researchExports
+Type: Package
+Title: Lightweight Export Helpers for Research Outputs
+Version: 0.0.0.9000
+Authors@R: person(given = "Markus", family = "User", email = "markus@example.com", role = c("aut", "cre"))
+Description: Reusable helpers to export ggplot objects, survival plot layouts,
+    and gtsummary/gt tables in common output formats.
+License: GPL-3
+Encoding: UTF-8
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.3.2
+Imports: ggplot2, gt
+Suggests: flextable, gtsummary, patchwork, testthat (>= 3.0.0)
+Config/testthat/edition: 3
+NeedsCompilation: no
+Packaged: 2026-03-08 08:16:36 UTC; markus
+Author: Markus User [aut, cre]
+Maintainer: Markus User <markus@example.com>

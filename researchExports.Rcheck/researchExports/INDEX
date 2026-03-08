@@ -1,0 +1,5 @@
+export_gtsummary_table
+                        Export gtsummary or gt Tables to HTML and DOCX
+save_plot               Save a ggplot to Multiple Export Formats
+save_surv_plots         Save Survival Plot Layouts to Multiple Export
+                        Formats
