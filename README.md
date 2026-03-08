@@ -15,6 +15,7 @@ repeatable export settings, and minimal setup.
 ## Installation
 
 ```r
+install.packages("remotes")
 remotes::install_github("mar92kus/mxport")
 library(mxport)
 ```
@@ -131,7 +132,7 @@ Arguments:
 
 ### `convert_html_to_svg()`
 
-Run this once after all HTML table exports are created. It is not executed automatically by `export_gtsummary_table()`.
+Run this once after all HTML table exports are created. It is not executed automatically by `export_gtsummary_table()`. If `page_size` is too small, table values can wrap into unintended multi-line cells. Prefer a larger page size and crop the final SVG manually afterwards.
 
 ```r
 mxport::convert_html_to_svg(
@@ -148,7 +149,7 @@ Arguments:
 | `html_subfolder` | `"tables/html"` | HTML input subfolder under `base_dir`. |
 | `pdf_subfolder` | `"tables/pdf"` | PDF output subfolder under `base_dir`. |
 | `svg_subfolder` | `"tables/svg"` | SVG output subfolder under `base_dir`. |
-| `page_size` | `"A2"` | Page size passed to `wkhtmltopdf` before SVG conversion. |
+| `page_size` | `"A2"` | Page size passed to `wkhtmltopdf` before SVG conversion. Too-small sizes may force unintended multiline wrapping; prefer larger export and crop manually. |
 | `quiet` | `TRUE` | Suppress CLI output from conversion commands. |
 | `skip_up_to_date` | `TRUE` | Skip conversion when existing SVG is newer than source HTML. |
 

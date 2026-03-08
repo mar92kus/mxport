@@ -404,6 +404,10 @@ export_gtsummary_table = function(
 #' Converts all `.html` files in the standard export location to `.pdf` (via
 #' `wkhtmltopdf`) and `.svg` (via `pdf2svg`).
 #'
+#' If `page_size` is too small, long table values can wrap into unintended
+#' multi-line cells. Prefer a larger `page_size` and crop the final SVG
+#' manually if needed.
+#'
 #' @param base_dir Base export directory.
 #' @param html_subfolder HTML subfolder under `base_dir`.
 #' @param pdf_subfolder PDF subfolder under `base_dir`.

@@ -38,6 +38,11 @@ and \code{svg_files}.
 Converts all \code{.html} files in the standard export location to \code{.pdf} (via
 \code{wkhtmltopdf}) and \code{.svg} (via \code{pdf2svg}).
 }
+\details{
+If \code{page_size} is too small, long table values can wrap into unintended
+multi-line cells. Prefer a larger \code{page_size} and crop the final SVG
+manually if needed.
+}
 \examples{
 \dontrun{
 convert_html_to_svg(base_dir = "exports")
