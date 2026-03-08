@@ -1,11 +1,20 @@
 # researchExports
 
-Minimal export helpers for research reporting workflows.
+`researchExports` is a lightweight R package for consistent export of research outputs.
+
+It provides small, reusable helpers to:
+
+- Save `ggplot2` plots in multiple formats (`svg`, `png`, `eps`)
+- Export survival plot layouts (main plot plus optional risk table/cumulative events)
+- Export `gtsummary`/`gt` tables to HTML and, when applicable, DOCX
+
+The package is designed for scripts and reports where you want predictable file paths,
+repeatable export settings, and minimal setup.
 
 ## Installation
 
 ```r
-remotes::install_github("<REPLACE_WITH_USERNAME>/researchExports")
+remotes::install_github("mar92kus/mxport")
 library(researchExports)
 ```
 
