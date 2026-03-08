@@ -62,13 +62,16 @@ mxport::save_surv_plots(
 ### `export_gtsummary_table()`
 
 ```r
-tbl = gt::gt(head(mtcars))
+tbl = gtsummary::tbl_summary(
+  data = transform(mtcars, am = factor(am)),
+  by = am
+)
 
 mxport::export_gtsummary_table(
   x = tbl,
   filename = "mtcars-table",
   base_dir = "exports",
   export_html = TRUE,
-  export_docx = FALSE
+  export_docx = TRUE
 )
 ```

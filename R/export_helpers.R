@@ -316,8 +316,8 @@ save_surv_plots = function(
 #'
 #' @examples
 #' \dontrun{
-#' tb = gt::gt(head(mtcars))
-#' export_gtsummary_table(tb, filename = "my-table", export_docx = FALSE)
+#' tb = gtsummary::tbl_summary(data = transform(mtcars, am = factor(am)), by = am)
+#' export_gtsummary_table(tb, filename = "my-table", export_docx = TRUE)
 #' }
 export_gtsummary_table = function(
   x,
