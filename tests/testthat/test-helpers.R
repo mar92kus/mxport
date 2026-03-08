@@ -54,3 +54,31 @@ test_that("export_gtsummary_table rejects unsupported input types", {
     "must be a gtsummary object or a gt_tbl"
   )
 })
+
+
+test_that("convert_html_to_svg validates missing html export folder", {
+  base_dir = file.path(tempdir(), paste0("mxport-missing-base-", as.integer(stats::runif(1, 1, 1e6))))
+
+  expect_error(
+    mxport::convert_html_to_svg(base_dir = base_dir),
+    "No HTML export directory found"
+  )
+})
+
+test_that("convert_html_to_svg returns empty results when no html files exist", {
+  base_dir = file.path(tempdir(), paste0("mxport-empty-base-", as.integer(stats::runif(1, 1, 1e6))))
+  html_dir = file.path(base_dir, "tables", "html")
+  pdf_dir = file.path(base_dir, "tables", "pdf")
+  svg_dir = file.path(base_dir, "tables", "svg")
+
+  dir.create(html_dir, recursive = TRUE)
+
+  res = mxport::convert_html_to_svg(base_dir = base_dir)
+
+  expect_length(res$converted, 0)
+  expect_length(res$skipped, 0)
+  expect_length(res$pdf_files, 0)
+  expect_length(res$svg_files, 0)
+  expect_false(dir.exists(pdf_dir))
+  expect_false(dir.exists(svg_dir))
+})

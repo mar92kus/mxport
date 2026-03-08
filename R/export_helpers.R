@@ -398,3 +398,153 @@ export_gtsummary_table = function(
     docx_file = docx_file
   ))
 }
+
+#' Convert HTML Table Exports to PDF and SVG
+#'
+#' Converts all `.html` files in the standard export location to `.pdf` (via
+#' `wkhtmltopdf`) and `.svg` (via `pdf2svg`).
+#'
+#' @param base_dir Base export directory.
+#' @param html_subfolder HTML subfolder under `base_dir`.
+#' @param pdf_subfolder PDF subfolder under `base_dir`.
+#' @param svg_subfolder SVG subfolder under `base_dir`.
+#' @param page_size Page size passed to `wkhtmltopdf`.
+#' @param quiet Whether to suppress command output.
+#' @param skip_up_to_date Whether to skip files when output SVG is newer than
+#'   input HTML.
+#'
+#' @return Invisibly returns a list with `converted`, `skipped`, `pdf_files`,
+#'   and `svg_files`.
+#' @export
+#'
+#' @examples
+#' \dontrun{
+#' convert_html_to_svg(base_dir = "exports")
+#' }
+convert_html_to_svg = function(
+  base_dir = "exports",
+  html_subfolder = "tables/html",
+  pdf_subfolder = "tables/pdf",
+  svg_subfolder = "tables/svg",
+  page_size = "A2",
+  quiet = TRUE,
+  skip_up_to_date = TRUE
+) {
+  stopifnot(is.character(base_dir), length(base_dir) == 1)
+  stopifnot(is.character(html_subfolder), length(html_subfolder) == 1)
+  stopifnot(is.character(pdf_subfolder), length(pdf_subfolder) == 1)
+  stopifnot(is.character(svg_subfolder), length(svg_subfolder) == 1)
+  stopifnot(is.character(page_size), length(page_size) == 1)
+
+  html_dir = file.path(base_dir, html_subfolder)
+  pdf_dir = file.path(base_dir, pdf_subfolder)
+  svg_dir = file.path(base_dir, svg_subfolder)
+
+  if (!dir.exists(html_dir)) {
+    stop(
+      "No HTML export directory found: ", html_dir,
+      ". Run `export_gtsummary_table(..., export_html = TRUE)` first.",
+      call. = FALSE
+    )
+  }
+
+  html_files = list.files(
+    path = html_dir,
+    pattern = "\\.html$",
+    full.names = TRUE
+  )
+
+  if (length(html_files) == 0) {
+    return(invisible(list(
+      converted = character(0),
+      skipped = character(0),
+      pdf_files = character(0),
+      svg_files = character(0)
+    )))
+  }
+
+  wkhtmltopdf = Sys.which("wkhtmltopdf")
+  if (!nzchar(wkhtmltopdf)) {
+    stop(
+      "Command `wkhtmltopdf` is required for HTML-to-PDF conversion but was not found in PATH.",
+      call. = FALSE
+    )
+  }
+
+  pdf2svg = Sys.which("pdf2svg")
+  if (!nzchar(pdf2svg)) {
+    stop(
+      "Command `pdf2svg` is required for PDF-to-SVG conversion but was not found in PATH.",
+      call. = FALSE
+    )
+  }
+
+  ensure_dir(pdf_dir)
+  ensure_dir(svg_dir)
+
+  converted = character(0)
+  skipped = character(0)
+  pdf_files = character(0)
+  svg_files = character(0)
+
+  for (html_file in html_files) {
+    filename = basename(html_file)
+    filename = sub("\\.html$", "", filename, ignore.case = TRUE)
+
+    pdf_file = file.path(pdf_dir, paste0(filename, ".pdf"))
+    svg_file = file.path(svg_dir, paste0(filename, ".svg"))
+
+    if (isTRUE(skip_up_to_date) && file.exists(svg_file)) {
+      html_mtime = file.info(html_file)$mtime
+      svg_mtime = file.info(svg_file)$mtime
+
+      if (!is.na(html_mtime) && !is.na(svg_mtime) && svg_mtime >= html_mtime) {
+        skipped = c(skipped, html_file)
+        pdf_files = c(pdf_files, pdf_file)
+        svg_files = c(svg_files, svg_file)
+        next
+      }
+    }
+
+    args_pdf = c(
+      if (isTRUE(quiet)) "--quiet",
+      "--page-size",
+      page_size,
+      html_file,
+      pdf_file
+    )
+
+    status_pdf = system2(
+      command = wkhtmltopdf,
+      args = args_pdf,
+      stdout = if (isTRUE(quiet)) FALSE else "",
+      stderr = if (isTRUE(quiet)) FALSE else ""
+    )
+
+    if (!identical(status_pdf, 0L)) {
+      stop("`wkhtmltopdf` failed for file: ", html_file, call. = FALSE)
+    }
+
+    status_svg = system2(
+      command = pdf2svg,
+      args = c(pdf_file, svg_file),
+      stdout = if (isTRUE(quiet)) FALSE else "",
+      stderr = if (isTRUE(quiet)) FALSE else ""
+    )
+
+    if (!identical(status_svg, 0L)) {
+      stop("`pdf2svg` failed for file: ", pdf_file, call. = FALSE)
+    }
+
+    converted = c(converted, html_file)
+    pdf_files = c(pdf_files, pdf_file)
+    svg_files = c(svg_files, svg_file)
+  }
+
+  invisible(list(
+    converted = converted,
+    skipped = skipped,
+    pdf_files = pdf_files,
+    svg_files = svg_files
+  ))
+}
