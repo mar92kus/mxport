@@ -6,7 +6,7 @@ It provides small, reusable helpers to:
 
 - Save `ggplot2` plots in multiple formats (`svg`, `png`, `eps`)
 - Export survival plot layouts (main plot plus optional risk table/cumulative events)
-- Export `gtsummary`/`gt` tables to HTML and, when applicable, DOCX
+- Export `gtsummary`/`gt` tables to HTML and DOCX
 - Convert exported HTML tables to PDF and SVG
 
 The package is designed for scripts and reports where you want predictable file paths,
@@ -124,7 +124,7 @@ Arguments:
 | `html_subfolder` | `"tables/html"` | HTML output subfolder under `base_dir`. |
 | `docx_subfolder` | `"tables/docx"` | DOCX output subfolder under `base_dir`. |
 | `export_html` | `TRUE` | Export HTML file. |
-| `export_docx` | `TRUE` | Export DOCX file (for original `gtsummary` input). |
+| `export_docx` | `TRUE` | Export DOCX file (tries `flextable` for `gtsummary`, then falls back to `gt::gtsave`). |
 | `apply_theme` | `TRUE` | Apply default table styling. |
 | `data_row_padding` | `4` | Data row padding in pixels. |
 | `row_group_padding` | `4` | Row group padding in pixels. |

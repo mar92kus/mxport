@@ -368,26 +368,61 @@ export_gtsummary_table = function(
   }
 
   if (isTRUE(export_docx)) {
-    if (!inherits(x, "gtsummary")) {
-      warning(
-        "DOCX export is only supported for the original gtsummary object. HTML export was completed.",
-        call. = FALSE
+    docx_dir = file.path(base_dir, docx_subfolder)
+    ensure_dir(docx_dir)
+
+    docx_file = file.path(docx_dir, paste0(filename, ".docx"))
+
+    docx_saved = FALSE
+    docx_errors = character(0)
+
+    if (inherits(x, "gtsummary") && requireNamespace("flextable", quietly = TRUE)) {
+      status_ft = tryCatch(
+        {
+          ft = gtsummary::as_flex_table(x)
+          flextable::save_as_docx(" " = ft, path = docx_file)
+          TRUE
+        },
+        error = function(e) {
+          docx_errors <<- c(docx_errors, paste0("flextable export failed: ", conditionMessage(e)))
+          FALSE
+        }
       )
-    } else {
-      if (!requireNamespace("flextable", quietly = TRUE)) {
-        stop("Package `flextable` is required for DOCX export.", call. = FALSE)
+
+      if (isTRUE(status_ft)) {
+        docx_saved = TRUE
       }
+    }
 
-      docx_dir = file.path(base_dir, docx_subfolder)
-      ensure_dir(docx_dir)
+    if (!isTRUE(docx_saved)) {
+      status_gt = tryCatch(
+        {
+          gt::gtsave(
+            data = tb_gt,
+            filename = docx_file
+          )
+          TRUE
+        },
+        error = function(e) {
+          docx_errors <<- c(docx_errors, paste0("gt::gtsave DOCX export failed: ", conditionMessage(e)))
+          FALSE
+        }
+      )
 
-      docx_file = file.path(docx_dir, paste0(filename, ".docx"))
+      if (isTRUE(status_gt)) {
+        docx_saved = TRUE
+      }
+    }
 
-      ft = gtsummary::as_flex_table(x)
-
-      flextable::save_as_docx(
-        " " = ft,
-        path = docx_file
+    if (!isTRUE(docx_saved)) {
+      stop(
+        paste(
+          "DOCX export failed for `export_gtsummary_table()`.",
+          "Tried flextable (when available) and gt::gtsave().",
+          if (length(docx_errors) > 0) paste(docx_errors, collapse = "\n") else "",
+          sep = "\n"
+        ),
+        call. = FALSE
       )
     }
   }
@@ -398,7 +433,6 @@ export_gtsummary_table = function(
     docx_file = docx_file
   ))
 }
-
 #' Convert HTML Table Exports to PDF and SVG
 #'
 #' Converts all `.html` files in the standard export location to `.pdf` (via
