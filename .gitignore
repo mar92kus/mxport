@@ -5,3 +5,10 @@
 *.Rproj
 .Rcheck/
 *.tar.gz
+
+# OS artifacts
+.DS_Store
+
+# R check artifacts
+*.Rcheck/
+researchExports.Rcheck/
