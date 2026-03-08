@@ -155,3 +155,16 @@ Arguments:
 
 `convert_html_to_svg()` requires the CLI tools `wkhtmltopdf` and `pdf2svg` to
 be available in your system `PATH`.
+
+If those tools are missing, install them with one of:
+
+- Conda (all platforms): `conda install -c conda-forge wkhtmltopdf pdf2svg`
+- macOS (Homebrew): `brew install wkhtmltopdf pdf2svg`
+- Ubuntu/Debian: `sudo apt-get install wkhtmltopdf pdf2svg`
+- Windows (Chocolatey): `choco install wkhtmltopdf pdf2svg`
+
+Verify from R before converting:
+
+```r
+Sys.which(c("wkhtmltopdf", "pdf2svg"))
+```

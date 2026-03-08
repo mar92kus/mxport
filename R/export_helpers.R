@@ -468,17 +468,32 @@ convert_html_to_svg = function(
   }
 
   wkhtmltopdf = Sys.which("wkhtmltopdf")
+  pdf2svg = Sys.which("pdf2svg")
+  missing_tools = character(0)
+
   if (!nzchar(wkhtmltopdf)) {
-    stop(
-      "Command `wkhtmltopdf` is required for HTML-to-PDF conversion but was not found in PATH.",
-      call. = FALSE
-    )
+    missing_tools = c(missing_tools, "wkhtmltopdf")
   }
 
-  pdf2svg = Sys.which("pdf2svg")
   if (!nzchar(pdf2svg)) {
+    missing_tools = c(missing_tools, "pdf2svg")
+  }
+
+  if (length(missing_tools) > 0) {
     stop(
-      "Command `pdf2svg` is required for PDF-to-SVG conversion but was not found in PATH.",
+      paste(
+        "Required CLI tools not found in PATH:", paste(missing_tools, collapse = ", "),
+        "",
+        "Install with one of:",
+        "- Conda (all platforms): conda install -c conda-forge wkhtmltopdf pdf2svg",
+        "- macOS (Homebrew): brew install wkhtmltopdf pdf2svg",
+        "- Ubuntu/Debian: sudo apt-get install wkhtmltopdf pdf2svg",
+        "- Windows (Chocolatey): choco install wkhtmltopdf pdf2svg",
+        "",
+        "Then verify in R:",
+        "Sys.which(c(\"wkhtmltopdf\", \"pdf2svg\"))",
+        sep = "\n"
+      ),
       call. = FALSE
     )
   }
