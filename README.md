@@ -20,13 +20,20 @@ library(researchExports)
 
 ## Usage
 
+Set your working directory to your project folder so `base_dir = "exports"`
+creates output inside that project (example: `rtest`).
+
+```r
+setwd("/Users/markus/Documents/Research/rtest")
+```
+
 ### `save_plot()`
 
 ```r
 p = ggplot2::ggplot(mtcars, ggplot2::aes(wt, mpg)) +
   ggplot2::geom_point()
 
-save_plot(
+researchExports::save_plot(
   plot = p,
   filename = "mtcars-scatter",
   base_dir = "exports"
@@ -43,7 +50,7 @@ survplot_obj = list(
   cumevents = ggplot2::ggplot(mtcars, ggplot2::aes(wt, qsec)) + ggplot2::geom_point()
 )
 
-save_surv_plots(
+researchExports::save_surv_plots(
   survplot = survplot_obj,
   filename = "survival-layout",
   base_dir = "exports",
@@ -57,7 +64,7 @@ save_surv_plots(
 ```r
 tbl = gt::gt(head(mtcars))
 
-export_gtsummary_table(
+researchExports::export_gtsummary_table(
   x = tbl,
   filename = "mtcars-table",
   base_dir = "exports",
